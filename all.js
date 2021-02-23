@@ -12,11 +12,11 @@ $("#amount");
 // ];
 
 const localStorageTransactions = JSON.parse(
-  localStorage.getItem("transactions")
+  localStorage.getItem("transaction")
 );
 
 let transactions =
-  localStorage.getItem("transactions") !== null ? localStorageTransactions : [];
+  localStorage.getItem("transaction") !== null ? localStorageTransactions : [];
 
 // Add addTransaction
 function addTransaction(e) {
@@ -82,7 +82,8 @@ function updateValues() {
     .reduce((acc, item) => (acc += item), 0)
     .toFixed(2);
 
-  const expense = ( // .filter 取得大於零的值 &  .reduce 將 <0 的值 (expense) 加總
+  const expense = // .filter 取得大於零的值 &  .reduce 將 <0 的值 (expense) 加總
+  (
     amounts.filter((item) => item < 0).reduce((acc, item) => (acc += item), 0) *
     -1
   ).toFixed(2);
