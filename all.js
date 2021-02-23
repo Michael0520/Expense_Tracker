@@ -1,17 +1,22 @@
-const balance = document.getElementById("balance");
-const money_plus = document.getElementById("money-plus");
-const money_minus = document.getElementById("money-minus");
-const list = document.getElementById("list");
-const form = document.getElementById("form");
-const text = document.getElementById("text");
-const amount = document.getElementById("amount");
+$("#balance");
+$("#money-plus");
+$("#money-minus");
+$("#list");
+$("#form");
+$("#text");
+$("#amount");
 
-const dummyTransactions = [
-  { id: 1, text: "Flower", amount: 12 },
-  { id: 2, text: "box", amount: -500 },
-];
+// const dummyTransactions = [
+//   { id: 1, text: "Flower", amount: 12 },
+//   { id: 2, text: "box", amount: -500 },
+// ];
 
-let transactions = dummyTransactions;
+const localStorageTransactions = JSON.parse(
+  localStorage.getItem("transactions")
+);
+
+let transactions =
+  localStorage.getItem("transactions") !== null ? localStorageTransactions : [];
 
 // Add addTransaction
 function addTransaction(e) {
@@ -31,6 +36,8 @@ function addTransaction(e) {
     addTransactionDOM(transaction);
 
     updateValues();
+
+    updateLocalStorage();
 
     text.value = "";
     amount.value = "";
@@ -52,7 +59,7 @@ function addTransactionDOM(transaction) {
   item.classList.add(transaction.amount < 0 ? "minus" : "plus");
 
   item.innerHTML = `
-        ${transaction.text} <span>${sign}${Math.abs(
+    ${transaction.text} <span>${sign}${Math.abs(
     transaction.amount
   )}</span> <button class = "delete-btn" onclick="removeTransaction(${
     transaction.id
@@ -75,8 +82,7 @@ function updateValues() {
     .reduce((acc, item) => (acc += item), 0)
     .toFixed(2);
 
-  const expense = // .filter 取得大於零的值 &  .reduce 將 <0 的值 (expense) 加總
-  (
+  const expense = ( // .filter 取得大於零的值 &  .reduce 將 <0 的值 (expense) 加總
     amounts.filter((item) => item < 0).reduce((acc, item) => (acc += item), 0) *
     -1
   ).toFixed(2);
@@ -91,12 +97,20 @@ function updateValues() {
 function removeTransaction(id) {
   transactions = transactions.filter((transaction) => transaction.id !== id);
 
+  updateLocalStorage();
+
   init();
+}
+
+// Update local storage transactions
+function updateLocalStorage() {
+  localStorage.setItem("transaction", JSON.stringify(transactions));
 }
 
 // Init app
 function init() {
-  list.innerHTML = "";
+  // list.innerHTML = "";
+  $("#list").html("");
 
   transactions.forEach(addTransactionDOM);
   updateValues();
